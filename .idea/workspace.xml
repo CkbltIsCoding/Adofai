@@ -4,19 +4,91 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="init2">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jsonSchemas.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/main.adofai" afterDir="false" />
+    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="keyrain plusplus">
+      <change afterPath="$PROJECT_DIR$/2021/(new) 200Hello_BPM_2021_Mix.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2021/(new) Hello_BPM_2021_Mix.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2021/200Hello_BPM_2021_Mix.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/(new) かめりあ_Camellia_-Hello-_BPM_-2022.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/8_BokeB&amp;W.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Outer Circle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Outer Square_45Degree.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Rainbow_Gradient.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Rune Letters.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Starfield1_Glow_Nickname.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7_4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7_5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7_6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_10tiles.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_30tiles.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_OrangeFJ_02.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_OrangeFJ_04.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_OrangeFJ_05.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_arrow_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_asdf.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_asdfasdf.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_asdfasdfasdf.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_blackhole.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_buildings_Nickname.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_credit.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_cross_03.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_crystal1_Nickname.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_crystal1_blur.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_crystal2_Nickname.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_crystal2_blur.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_crystal_Nickname.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_crystal_blur.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_full_circle_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_01_copied.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_02.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_12341.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_123414242123.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_grass2_01_Nickname.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_grass2_01_Nickname2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_grid_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_letterbox_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_letterbox_wshadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_light_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_light_01_copied.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_light_02.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_light_03.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_magicshape.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_magicshape3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_magicshape3_thin.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_next.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_thin_circle_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_thin_circle_02.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_thin_square_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_twenty.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_two.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/deco_vignette_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/grass.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/grass2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/grass3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/grass4_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/grass4_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/grass4_4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/main.adofai" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/p43.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/2022/かめりあ_Camellia_-Hello-_BPM_-2022.ogg" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/2023/かめりあ(Camellia) - Hello (BPM) 2023.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2024/main.adofai" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/2024/かめりあ(Camellia) - Hello (BPM) 2024.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/music.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JipperEX_Unnerfed/(new) zsry - Jipper EX.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JipperEX_Unnerfed/Jipper EX.adofai" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JipperEX_Unnerfed/zsry - Jipper EX.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beat.ogg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beat_to_adofai.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/demo/main.adofai" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/simplify.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ludicin - Fallen Symphony.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/2023/main.adofai" beforeDir="false" afterPath="$PROJECT_DIR$/2023/main.adofai" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2024/main.adofai" beforeDir="false" afterPath="$PROJECT_DIR$/2024/main.adofai" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/music.py" beforeDir="false" afterPath="$PROJECT_DIR$/music.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +117,9 @@
     &quot;accountId&quot;: &quot;9ce0f840-d1f1-4cf4-b73f-a5d7cef66d90&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -59,8 +134,12 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Python.a.executor&quot;: &quot;Run&quot;,
+    &quot;Python.beat_to_adofai.executor&quot;: &quot;Run&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;Python.main2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.music.executor&quot;: &quot;Run&quot;,
+    &quot;Python.simplify.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
@@ -71,15 +150,17 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Projects\Pycharm Projects\Adofai" />
       <recent name="D:\Projects\Pycharm Projects\Adofai\.venv\Lib\site-packages" />
       <recent name="D:\Projects\Pycharm Projects\Adofai\2024" />
-      <recent name="D:\Projects\Pycharm Projects\Adofai" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Projects\Pycharm Projects\Adofai\2024" />
+      <recent name="D:\Projects\Pycharm Projects\Adofai" />
       <recent name="D:\Projects\Pycharm Projects\Adofai\FS" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Adofai" />
       <option name="ENV_FILES" value="" />
@@ -102,32 +183,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="main2" type="PythonConfigurationType" factoryName="Python">
-      <module name="Adofai" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="D:\Projects\Pycharm Projects\Adofai\main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <list>
-      <item itemvalue="Python.main" />
-      <item itemvalue="Python.main2" />
-    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -161,7 +216,23 @@
       <option name="project" value="LOCAL" />
       <updated>1724044263075</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="support .adofai files">
+      <option name="closed" value="true" />
+      <created>1724664469997</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1724664469997</updated>
+    </task>
+    <task id="LOCAL-00004" summary="keyrain plusplus">
+      <option name="closed" value="true" />
+      <created>1726392783290</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1726392783290</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -179,6 +250,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="init" />
     <MESSAGE value="init2" />
-    <option name="LAST_COMMIT_MESSAGE" value="init2" />
+    <MESSAGE value="support .adofai files" />
+    <MESSAGE value="keyrain plusplus" />
+    <option name="LAST_COMMIT_MESSAGE" value="keyrain plusplus" />
   </component>
 </project>
