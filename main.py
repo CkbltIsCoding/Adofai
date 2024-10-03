@@ -9,6 +9,7 @@ import os.path
 import sys
 import time
 import traceback
+import re
 from math import pi, sin as _sin, cos as _cos, floor, cbrt
 
 import pygame
@@ -91,9 +92,9 @@ class App:
         self.state = STATE_CHARTING  # 游戏状态
         self.pre_state = 0  # 上一帧的游戏状态
 
-        self.keys = [K_q, K_w, K_e, K_r, K_v, K_SPACE, K_n, K_u, K_i, K_o, K_p]  # 键
-        # self.keys = [K_LSHIFT, K_CAPSLOCK, K_TAB, K_1, K_2, K_e, K_c, K_SPACE,
-        #              K_RALT, K_PERIOD, K_p, K_EQUALS, K_BACKSPACE, K_BACKSLASH, K_RETURN, K_RSHIFT]  # 键
+        # self.keys = [K_q, K_w, K_e, K_r, K_v, K_SPACE, K_n, K_u, K_i, K_o, K_p]  # 键
+        self.keys = [K_LCTRL, K_CAPSLOCK, K_TAB, K_1, K_2, K_e, K_c, K_SPACE,
+                     K_a, K_PERIOD, K_p, K_EQUALS, K_BACKSPACE, K_BACKSLASH, K_RETURN, K_DOWN]  # 键
         self.key_pressed = [False for _ in range(len(self.keys))]
         self.keyrain = [[False for _ in range(120)] for _ in range(len(self.keys))]
         self.autoplay_keyrain = None
@@ -248,7 +249,9 @@ class App:
         with open(
             self.path, "r", encoding="utf-8-sig"
         ) as f:
-            beatmap = json.load(f, strict=False)
+            string = f.read()
+            string = re.sub(",(?=\\s*?[}\\]])", "", string)  # 删除尾随逗号
+            beatmap = json.loads(string, strict=False)
         self.title = beatmap["settings"]["artist"] + (" - " if beatmap["settings"]["artist"] and beatmap["settings"]["song"] else "") + beatmap["settings"]["song"]
         self.offset = beatmap["settings"]["offset"] * 100 / self.pitch + 50 * (
             100 / self.pitch - 1
@@ -395,10 +398,11 @@ class App:
             self.music_path = os.path.join(
                 os.path.dirname(self.path), beatmap["settings"]["songFilename"]
             )
+            out_file = str(self.pitch) + " " + os.path.split(self.music_path)[1]
+            out_file = os.path.join(os.path.split(self.music_path)[0], out_file)
             if self.pitch != 100:
-                out_file = str(self.pitch) + os.path.split(self.music_path)[1]
-                out_file = os.path.join(os.path.split(self.music_path)[0], out_file)
-                music.change_speed(self.music_path, out_file, self.pitch / 100)
+                if not os.path.exists(out_file):
+                    music.change_speed(self.music_path, out_file, self.pitch / 100)
                 self.music_path = out_file
             out_file = "(new) " + os.path.split(self.music_path)[1]
             out_file = os.path.join(os.path.split(self.music_path)[0], out_file)
@@ -609,7 +613,6 @@ class App:
                 elif event.dict["button"] == 5:
                     self.camera_sight /= 1.1
 
-
     def loop(self) -> None:
         global STATE_PLAYING
 
@@ -668,9 +671,10 @@ class App:
             ):  # 准备的声音
                 self.channel_ready.play(self.sound_ready)
             if self.pre_tile != self.now_tile:
-                if self.autoplay:
-                    self.timing_list.append([self.timing, 0])
-                    self.judge()
+                for i in range(self.now_tile - self.pre_tile):
+                    if self.autoplay:
+                        self.timing_list.append([self.timing, 0])
+                        self.judge()
                 # self.channel_beat.play(self.sound_beat)  # 打的声音
 
             if not self.autoplay:  # 错过判定
@@ -868,8 +872,6 @@ class App:
             self.camera_sight = 0
 
         # self.camera_sight += (self.now_tile - self.pre_tile) * 0.1
-
-
 
         if self.state == STATE_CHARTING:
             # 视野
@@ -1445,7 +1447,7 @@ class App:
 
     def render_keyrain(self):
         rect = pygame.Surface((40, 3), SRCALPHA)
-        small_rect = pygame.Surface((30, 3), SRCALPHA)
+        small_rect = pygame.Surface((20, 3), SRCALPHA)
         pos = [
             (0, 1),
             (1, 1),
@@ -1461,25 +1463,25 @@ class App:
         ]
         name = list("QWERV_NUIOP")
 
-        # pos = [
-        #     (0, 0),
-        #     (1, 0),
-        #     (0, 1),
-        #     (1, 1),
-        #     (2, 1),
-        #     (3, 1),
-        #     (2, 0),
-        #     (3, 0),
-        #     (4, 0),
-        #     (5, 0),
-        #     (4, 1),
-        #     (5, 1),
-        #     (6, 1),
-        #     (7, 1),
-        #     (6, 0),
-        #     (7, 0)
-        # ]
-        # name = "LSft,Caps,Tab,1,2,E,C,_,RAlt,.,P,=,←,\\,Ret,RSft".split(",")
+        pos = [
+            (0, 0),
+            (1, 0),
+            (0, 1),
+            (1, 1),
+            (2, 1),
+            (3, 1),
+            (2, 0),
+            (3, 0),
+            (4, 0),
+            (5, 0),
+            (4, 1),
+            (5, 1),
+            (6, 1),
+            (7, 1),
+            (6, 0),
+            (7, 0)
+        ]
+        name = "LSft,Caps,Tab,1,2,E,C,_,RAlt,.,P,=,←,\\,Ret,RSft".split(",")
         if self.autoplay:
             if self.autoplay_keyrain and 0 <= self.timer < len(self.autoplay_keyrain[0]):
                 key_pressed = []
@@ -1524,7 +1526,7 @@ class App:
                 if self.keyrain[i][j] and not pos[i][1]:
                     small_rect.fill((255, 0, 255, max(0, min(255, 1000 - j * 10))))
                     self.screen.blit(
-                        small_rect, (15 + pos[i][0] * 42, self.height - 15 - 82 - j * 3)
+                        small_rect, (20 + pos[i][0] * 42, self.height - 15 - 82 - j * 3)
                     )
 
     def convert_pos(self, pos: Vec2, camera=True) -> Vec2:
@@ -1553,22 +1555,25 @@ class App:
 
 
 if __name__ == "__main__":
-    path_to_beatmap = "2024/main.adofai"
+    debugging = False
+
+    path_to_beatmap = "Levels/2021/fixed.adofai"
     pitch = 100
-    try:
-        print("Adofai (Pygame ver.) 冰与火之舞 Pygame版 By Ckblt")
-        print("支持按 Q W E R V 空格(Space) N U I O P 键")
-        path_to_beatmap = input("输入谱面的路径 (Enter the path to the beatmap) : ")
-        pitch = input("输入音高，默认100 (Enter the pitch) : ")
-        if pitch == "":
-            pitch = 100
-        else:
-            pitch = int(pitch)
-    except ValueError:
-        # traceback.print_exc()
-        print("出错了！输入的音高不是整数。 (Please enter an integer)")
-        input("按下回车键继续…… (Press the enter key to continue)")
-        exit(1)
+    if not debugging:
+        try:
+            print("Adofai (Pygame ver.) 冰与火之舞 Pygame版 By Ckblt")
+            print("支持按 Q W E R V 空格(Space) N U I O P 键")
+            path_to_beatmap = input("输入谱面的路径 (Enter the path to the beatmap) : ")
+            pitch = input("输入音高，默认100 (Enter the pitch) : ")
+            if pitch == "":
+                pitch = 100
+            else:
+                pitch = int(pitch)
+        except ValueError:
+            # traceback.print_exc()
+            print("出错了！输入的音高不是整数。 (Please enter an integer)")
+            input("按下回车键继续…… (Press the enter key to continue)")
+            exit(1)
 
     try:
         print("加载中…… (Loading...)")
@@ -1578,7 +1583,7 @@ if __name__ == "__main__":
     except (SystemExit, KeyboardInterrupt):
         pass
     except FileNotFoundError as e:
-        traceback.print_exc()
+        # traceback.print_exc()
         pygame.quit()
         print(
             f"出错了！我没有找到{e.filename}。这个错误可能是因为谱面的路径不对。 (Wrong path)"
