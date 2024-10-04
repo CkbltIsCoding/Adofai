@@ -2,14 +2,14 @@
 author: CkbltIsCoding
 """
 
-import bisect
 import json
 import math
-import os.path
+import os
 import sys
 import time
 import traceback
 import re
+from bisect import bisect_left, bisect_right
 from tkinter import messagebox, filedialog, simpledialog
 from math import pi, sin as _sin, cos as _cos, floor, cbrt
 
@@ -437,14 +437,26 @@ class App:
                 self.music_path = out_file
             out_file = "(new) " + os.path.split(self.music_path)[1]
             out_file = os.path.join(os.path.split(self.music_path)[0], out_file)
+            print()
             if not os.path.exists(out_file):
                 if not music.add_sound(self.music_path, out_file, self.offset, [tile["ms"] for tile in self.tiles],
                                        self.process_data_render_callback):
-                    self.state = STATE_SELECTING
-                    self.pitch = 100
-                    return False
+                    # self.state = STATE_SELECTING
+                    # self.pitch = 100
+                    pass
             self.music_path = out_file
 
+            pygame.mixer_music.load(self.music_path)
+            pygame.mixer_music.set_volume(0.3)
+        else:
+            out_file = str(self.pitch) + " " + os.path.splitext(os.path.split(self.path)[1])[0] + ".ogg"
+            out_file = os.path.join(os.path.split(self.path)[0], out_file)
+            self.music_path = out_file
+            if (not os.path.exists(self.music_path)
+                    and not music.add_sound("", out_file, self.offset, [tile["ms"] for tile in self.tiles],
+                                   self.process_data_render_callback)):
+                pass
+                # return False
             pygame.mixer_music.load(self.music_path)
             pygame.mixer_music.set_volume(0.3)
 
@@ -539,7 +551,7 @@ class App:
         # count = 0
         # for index in range(1, len(self.tiles)):
         #     tile = self.tiles[index]
-        #     bpm_change_index = bpm_change[bisect.bisect_right(bpm_change, index) - 1]
+        #     bpm_change_index = bpm_change[bisect_right(bpm_change, index) - 1]
         #     ms = 1000 / (tile["bpm"] / 60)
         #     while ms > max_ms:
         #         ms /= 2
@@ -574,10 +586,10 @@ class App:
         yk = False
         for i in range(round(self.tiles[-1]["ms"]) + 1000):
             if i < self.tiles[-1]["ms"]:
-                index = bisect.bisect_right(self.tiles, i, key=lambda x: x["ms"]) - 1
+                index = bisect_right(self.tiles, i, key=lambda x: x["ms"]) - 1
             else:
                 index = len(self.tiles) - 1
-            bpm_change_index = bpm_change[bisect.bisect_right(bpm_change, index) - 1]
+            bpm_change_index = bpm_change[bisect_right(bpm_change, index) - 1]
             tile = self.tiles[index]
             ms = 1000 / (tile["bpm"] / 60)
             # ms = 1000 / (2023 / 60)
@@ -682,9 +694,10 @@ class App:
                     pygame.mixer_music.stop()
                     self.timing_list.clear()
                     self.timing_sprites.clear()
+                    self.timer = 0
                     self.state = STATE_CHARTING
             elif self.state == STATE_CHARTING:
-                angles45 = {K_d: 0, K_e: 45, K_w: 90, K_q: 135, K_a: 180, K_z: 225, K_s: 270, K_c: 315}
+                # angles45 = {K_d: 0, K_e: 45, K_w: 90, K_q: 135, K_a: 180, K_z: 225, K_s: 270, K_c: 315}
 
                 if event.dict["key"] == K_ESCAPE:  # 退出程序
                     self.running = False
@@ -744,7 +757,7 @@ class App:
         if event.type == MOUSEBUTTONDOWN:
             if self.state == STATE_CHARTING:
                 if event.dict["button"] == 1:
-                    pos = self.convert_pos2(Vec2(pygame.mouse.get_pos()))
+                    pos = self.conv_pos2world(Vec2(pygame.mouse.get_pos()))
                     for index in range(len(self.tiles)):
                         if pos.distance_squared_to(self.tiles[index]["pos"]) <= 0.5:
                             self.active_tile = index
@@ -837,36 +850,36 @@ class App:
 
         if self.state == STATE_PLAYING:
             # Timer & music
-            if self.music_path == "":
-                if not self.waiting_for_key:
+            # if self.music_path == "":
+            #     if not self.waiting_for_key:
+            #         self.timer = round(
+            #             (time.time() - self.start_timer) * 1000
+            #             - max(8 / self.tiles[0]["bpm"] * 60 * 1000, self.offset)
+            #         )
+            # else:
+            if not self.waiting_for_key:
+                if pygame.mixer_music.get_busy():
+                    if self.active_tile <= 0:
+                        self.timer = round(pygame.mixer_music.get_pos() - self.offset)
+                    else:
+                        self.timer = round(pygame.mixer_music.get_pos()
+                                           + self.tiles[self.active_tile]["ms"])
+                elif self.active_tile <= 0:
                     self.timer = round(
                         (time.time() - self.start_timer) * 1000
                         - max(8 / self.tiles[0]["bpm"] * 60 * 1000, self.offset)
                     )
-            else:
-                if not self.waiting_for_key:
-                    if pygame.mixer_music.get_busy():
-                        if self.active_tile <= 0:
-                            self.timer = round(pygame.mixer_music.get_pos() - self.offset)
-                        else:
-                            self.timer = round(pygame.mixer_music.get_pos()
-                                               + self.tiles[self.active_tile]["ms"])
-                    elif self.active_tile <= 0:
-                        self.timer = round(
-                            (time.time() - self.start_timer) * 1000
-                            - max(8 / self.tiles[0]["bpm"] * 60 * 1000, self.offset)
-                        )
-                    else:
-                        self.timer = round((time.time() - self.start_timer) * 1000)
+                else:
+                    self.timer = round((time.time() - self.start_timer) * 1000)
 
-                    if not pygame.mixer_music.get_busy() and not self.music_played:
-                        if self.active_tile > 0:
-                            pygame.mixer_music.play()
-                            self.music_played = True
-                            pygame.mixer_music.set_pos(self.offset / 1000 + self.tiles[self.active_tile]["ms"] / 1000)
-                        elif -self.offset < self.timer <= 0:
-                            pygame.mixer_music.play()
-                            self.music_played = True
+                if not pygame.mixer_music.get_busy() and not self.music_played:
+                    if self.active_tile > 0:
+                        pygame.mixer_music.play()
+                        self.music_played = True
+                        pygame.mixer_music.set_pos(self.offset / 1000 + self.tiles[self.active_tile]["ms"] / 1000)
+                    elif -self.offset < self.timer <= 0 or self.offset == 0:
+                        pygame.mixer_music.play()
+                        self.music_played = True
 
             # Timing
             if self.autoplay:
@@ -971,7 +984,7 @@ class App:
             self.camera()
             if pygame.mouse.get_pressed()[0] and self.dragging:
                 rel = pygame.mouse.get_rel()
-                self.camera_pos -= self.convert_pos2(Vec2(rel), False, False)
+                self.camera_pos -= self.conv_pos2world(Vec2(rel), False, False)
             else:
                 self.dragging = False
 
@@ -1028,12 +1041,13 @@ class App:
             self.beat = self.timer / (60 / self.tiles[0]["bpm"]) / 1000
         else:
             self.beat = 0
-            for index in range(len(self.tiles)):
-                tile = self.tiles[index]
-                if self.timer >= tile["ms"]:
-                    self.now_tile += 1
-                else:
-                    break
+            self.now_tile = bisect_right(self.tiles, self.timer, key=lambda tile: tile["ms"])
+            # for index in range(len(self.tiles)):
+            #     tile = self.tiles[index]
+            #     if self.timer >= tile["ms"]:
+            #         self.now_tile += 1
+            #     else:
+            #         break
 
             if self.now_tile != 0:
                 self.now_tile -= 1
@@ -1144,7 +1158,7 @@ class App:
                 if self.active_tile - 1 >= 0 and tile["bpm"] != self.tiles[self.active_tile - 1]["bpm"]:
                     text_list.append(str(tile["bpm"]) + "BPM")
                 text = self.font_acc.render(" ".join(text_list), True, "#ffffff", "#000000")
-                self.screen.blit(text, self.convert_pos(self.tiles[self.active_tile]["pos"]))
+                self.screen.blit(text, self.conv_pos2screen(self.tiles[self.active_tile]["pos"]))
 
         elif self.state == STATE_PLAYING:
             self.render_tiles()
@@ -1152,14 +1166,14 @@ class App:
             pygame.draw.circle(
                 self.screen,
                 "#ff3333",
-                self.convert_pos(self.planet1_pos),
+                self.conv_pos2screen(self.planet1_pos),
                 self.planet_size * self.camera_sight / 2,
             )
             if not self.waiting_for_key:
                 pygame.draw.circle(
                     self.screen,
                     "#3366ff",
-                    self.convert_pos(self.planet2_pos),
+                    self.conv_pos2screen(self.planet2_pos),
                     self.planet_size * self.camera_sight / 2,
                 )
             # 绘制准度提示
@@ -1173,7 +1187,7 @@ class App:
                 "P!": self.text_p,
             }
             for sprite in self.timing_sprites:
-                pos = self.convert_pos(sprite[1])
+                pos = self.conv_pos2screen(sprite[1])
                 if not (
                         -100 <= pos.x <= self.width + 100 and -100 <= pos.y <= self.height + 100
                 ):
@@ -1312,7 +1326,11 @@ class App:
             )
 
     def render_tiles(self) -> None:
+        global length, world_cam_border_min, world_cam_border_max
         length = self.planet_size * self.camera_sight
+        world_cam_border_min = self.conv_pos2world(Vec2(-length, -length))
+        world_cam_border_max = self.conv_pos2world(Vec2(self.width + length, self.height + length))
+
         border_length = length / 20
         half_sqr = pygame.Surface((length / 2, length), SRCALPHA)
         half_sqr_border = pygame.Surface(
@@ -1330,12 +1348,13 @@ class App:
         tri_border = pygame.Surface(
             (length / 2 + border_length * 2, length + border_length * 2), SRCALPHA
         )
+        start = bisect_left(self.tiles, self.timer - 2000, key=lambda tile: tile["ms"]) - 1
         stop = min(
             len(self.tiles) - 1,
             (self.now_tile if self.autoplay else self.player_now_tile) + 256,
         ) if self.state == STATE_PLAYING else len(self.tiles) - 1
         # stop = len(self.tiles) - 1
-        for index in range(stop, -1, -1):  # 倒序
+        for index in range(stop, start, -1):  # 倒序
             if not self.render_tile_check(index):
                 continue
 
@@ -1379,6 +1398,9 @@ class App:
                     alpha = 255 - (
                             self.timer - (self.tiles[index]["ms"] if index != 0 else 0) - 200
                     )
+                    # alpha = 255 - (
+                    #         self.timer - (self.tiles[index]["ms"] if index != 0 else 0)
+                    # )
                     if alpha <= 0:
                         break
                 else:  # 出现动画
@@ -1642,26 +1664,28 @@ class App:
                 pos.y *= -1
                 self.screen.blit(
                     new_surf_tile,
-                    new_surf_tile.get_rect(center=self.convert_pos(tile["pos"]) + pos)
+                    new_surf_tile.get_rect(center=self.conv_pos2screen(tile["pos"]) + pos)
                 )
             else:
                 self.screen.blit(
                     new_surf_tile,
-                    new_surf_tile.get_rect(center=self.convert_pos(tile["pos"]))
+                    new_surf_tile.get_rect(center=self.conv_pos2screen(tile["pos"]))
                 )
 
     def render_tile_check(self, index: int) -> bool:
         # if index < (self.now_tile if self.autoplay else self.player_now_tile):
         #     return False
 
+        global length, world_cam_border_min, world_cam_border_max
+
         tile = self.tiles[index]
         if not (
-                -self.planet_size * self.camera_sight
-                <= self.convert_pos(tile["pos"]).x
-                <= self.width + self.planet_size * self.camera_sight
-                and -self.planet_size * self.camera_sight
-                <= self.convert_pos(tile["pos"]).y
-                <= self.height + self.planet_size * self.camera_sight
+                world_cam_border_min.x
+                <= tile["pos"].x
+                <= world_cam_border_max.x
+                and world_cam_border_min.y
+                >= tile["pos"].y
+                >= world_cam_border_max.y
         ):
             return False
 
@@ -1756,7 +1780,7 @@ class App:
                         small_rect, (20 + pos[i][0] * 42, self.height - 15 - 82 - j * 3)
                     )
 
-    def convert_pos(self, pos: Vec2, camera=True) -> Vec2:
+    def conv_pos2screen(self, pos: Vec2, camera=True) -> Vec2:
         pos = pos.copy()
         if camera:
             pos -= self.camera_pos
@@ -1765,7 +1789,7 @@ class App:
         pos.y = pos.y * -self.camera_sight + self.height // 2
         return pos
 
-    def convert_pos2(self, pos: Vec2, camera=True, screen=True) -> Vec2:
+    def conv_pos2world(self, pos: Vec2, camera=True, screen=True) -> Vec2:
         pos = pos.copy()
         if screen:
             pos -= (self.width // 2, self.height // 2)
@@ -1782,6 +1806,8 @@ class App:
 
 
 if __name__ == "__main__":
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
     debugging = False
 
     if not debugging:
@@ -1805,9 +1831,9 @@ if __name__ == "__main__":
     pitch = 100
 
     try:
-        print("加载中…… (Loading...)")
+        # print("加载中…… (Loading...)")
         theApp = App(path_to_level, pitch)
-        print("加载完成！你现在应该会看到一个Pygame窗口。 (Complete!)")
+        # print("加载完成！你现在应该会看到一个Pygame窗口。 (Complete!)")
         theApp.execute()
     except (SystemExit, KeyboardInterrupt):
         pass
