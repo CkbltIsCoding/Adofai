@@ -23,9 +23,9 @@ def add_sound(in_file, out_file, offset, ms_list: list[int], callback):
             # print(f"Loading... ({index / len(ms_list) * 100:.2f}%)")
             if not callback((index + 1) / len(ms_list)):
                 return False
-        if index == 10000:
-            (audio - 2).overlay(beats + 3, offset).export(out_file, format="ogg")
-            return True
+        # if index == 10000:
+        #     (audio - 2).overlay(beats + 3, offset).export(out_file, format="ogg")
+        #     return True
     (audio - 2).overlay(beats + 3, offset).export(out_file, format="ogg")
     return True
 
