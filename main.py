@@ -10,6 +10,7 @@ import sys
 import time
 import traceback
 import re
+from tkinter import messagebox, filedialog, simpledialog
 from math import pi, sin as _sin, cos as _cos, floor, cbrt
 
 import pygame
@@ -62,46 +63,60 @@ COUNTERCLOCKWISE = False
 
 STATE_PLAYING = 1
 STATE_CHARTING = 2
+STATE_SELECTING = 3
+STATE_LOADING = 4
 
 
 class App:
-    def __init__(self, _path_to_beatmap: str, _pitch: int = 100) -> None:
+    def __init__(self, _path_to_level: str, _pitch: int = 100) -> None:
+        pygame.init()
+        pygame.mixer.init()
+
+        self.size = self.width, self.height = 1200, 800
+        self.screen = pygame.display.set_mode(self.size, HWSURFACE | RESIZABLE)
+
+        self.font_debug = pygame.font.SysFont("Consolas", 24)
+        self.font_title = pygame.font.SysFont("Dengxian", 36, True, True)
+        self.font_acc = pygame.font.SysFont("Consolas", 18, True)
+
         self.music_path = ""
         self.offset = 0
         self.pitch = _pitch
         self.title = ""
+        self.text_title = None
 
         # self.path = ".\\2024\\main.adofai"
-        self.path = _path_to_beatmap
+        self.path = _path_to_level
+        self.level = None
         self.tiles = []
         self.bg_color = "#10131a"
         pygame.display.set_caption(
             "A dance of fire and ice (Pygame version) (Loading...)"
         )
-        self.process_data()
+        if self.path != "":
+            self.process_data()
         pygame.display.set_caption("A dance of fire and ice (Pygame version)")
 
-        pygame.init()
-
-        self.size = self.width, self.height = 1200, 800
-        self.screen = pygame.display.set_mode(self.size)
-        pygame.display.set_caption("A dance of fire and ice (Pygame)")
         self.running = True  # 是否运行
         self.fullscreen = False  # 全屏
 
-        self.state = STATE_CHARTING  # 游戏状态
-        self.pre_state = 0  # 上一帧的游戏状态
+        self.state = STATE_CHARTING if self.path else STATE_SELECTING  # 游戏状态
+        self.pre_state = -1  # 上一帧的游戏状态
 
         # self.keys = [K_q, K_w, K_e, K_r, K_v, K_SPACE, K_n, K_u, K_i, K_o, K_p]  # 键
-        self.keys = [K_LCTRL, K_CAPSLOCK, K_TAB, K_1, K_2, K_e, K_c, K_SPACE,
-                     K_a, K_PERIOD, K_p, K_EQUALS, K_BACKSPACE, K_BACKSLASH, K_RETURN, K_DOWN]  # 键
+        self.keys = [K_LCTRL, K_CAPSLOCK, K_TAB, K_q, K_w, K_e, K_c, K_SPACE,
+                     K_a, K_PERIOD, K_p, K_LEFTBRACKET, K_RIGHTBRACKET, K_BACKSLASH, K_RETURN, K_DOWN]  # 键
         self.key_pressed = [False for _ in range(len(self.keys))]
-        self.keyrain = [[False for _ in range(120)] for _ in range(len(self.keys))]
-        self.autoplay_keyrain = None
-        # self.process_autoplay_keyrain()
+        self.key_rain = [[False for _ in range(120)] for _ in range(len(self.keys))]
+        self.autoplay_key_rain = None
+        if len(self.tiles) > 0:
+            self.process_autoplay_key_rain()
 
         self.start_timer = 0
-        self.timer = -max(8 / self.tiles[0]["bpm"] * 60 * 1000, self.offset)
+        if len(self.tiles) > 0:
+            self.timer = -max(8 / self.tiles[0]["bpm"] * 60 * 1000, self.offset)
+        else:
+            self.timer = 0
         self.beat = 0
         self.player_beat = 0
         self.pre_beat = 0
@@ -148,18 +163,6 @@ class App:
 
         self.keydown_event_count = 0
 
-        self.font_debug = pygame.font.SysFont("Consolas", 24)
-        self.font_title = pygame.font.SysFont("Dengxian", 36, True, True)
-        self.font_acc = pygame.font.SysFont("Consolas", 18, True)
-
-        text_title_shadow = self.font_title.render(self.title, True, "#00000099")
-        self.text_title = pygame.Surface(
-            Vec2(text_title_shadow.get_size()) + Vec2(2, 2), SRCALPHA
-        )
-        self.text_title.blit(text_title_shadow, (2, 2))
-        text_title = self.font_title.render(self.title, True, "#ffffff")
-        self.text_title.blit(text_title, (0, 0))
-
         self.text_autoplay = self.font_debug.render("Autoplay", True, "#ffffff")
 
         self.text_tl = self.font_acc.render(
@@ -170,12 +173,12 @@ class App:
         self.text_l = self.font_acc.render(
             "Late!",
             True,
-            "#ffcc00",
+            "#ff6600",
         )
         self.text_lp = self.font_acc.render(
             "LP!",
             True,
-            "#ffff00",
+            "#ffcc00",
         )
         self.text_p = self.font_acc.render(
             "P!",
@@ -185,12 +188,12 @@ class App:
         self.text_ep = self.font_acc.render(
             "EP!",
             True,
-            "#ffff00",
+            "#ffcc00",
         )
         self.text_e = self.font_acc.render(
             "Early!",
             True,
-            "#ffcc00",
+            "#ff6600",
         )
         self.text_te = self.font_acc.render(
             "TE!!",
@@ -200,17 +203,11 @@ class App:
 
         self.dragging = False
 
-        pygame.mixer.init()
-
         self.sound_ready = pygame.mixer.Sound("ready.wav")
         self.channel_ready = pygame.mixer.Channel(0)
 
         self.sound_beat = pygame.mixer.Sound("beat.wav")
         self.channel_beat = pygame.mixer.Channel(1)
-
-        if self.music_path != "":
-            pygame.mixer_music.load(self.music_path)
-            pygame.mixer_music.set_volume(0.3)
 
         self.music_played = False
 
@@ -225,9 +222,12 @@ class App:
         self.timing_sprites = []
         self.waiting_for_key = True
         self.key_pressed = [False for _ in range(len(self.keys))]
-        self.keyrain = [[False for _ in range(120)] for _ in range(len(self.keys))]
+        self.key_rain = [[False for _ in range(120)] for _ in range(len(self.keys))]
         self.start_timer = 0
-        self.timer = -max(8 / self.tiles[0]["bpm"] * 60 * 1000, self.offset)
+        if len(self.tiles) > 0:
+            self.timer = -max(8 / self.tiles[0]["bpm"] * 60 * 1000, self.offset)
+        else:
+            self.timer = 0
         self.beat = 0
         self.player_beat = 0
         self.pre_beat = 0
@@ -245,44 +245,75 @@ class App:
         self.pre_tile = 0
         self.music_played = False
 
-    def process_data(self) -> None:
-        with open(
-            self.path, "r", encoding="utf-8-sig"
-        ) as f:
-            string = f.read()
-            string = re.sub(",(?=\\s*?[}\\]])", "", string)  # 删除尾随逗号
-            beatmap = json.loads(string, strict=False)
-        self.title = beatmap["settings"]["artist"] + (" - " if beatmap["settings"]["artist"] and beatmap["settings"]["song"] else "") + beatmap["settings"]["song"]
-        self.offset = beatmap["settings"]["offset"] * 100 / self.pitch + 50 * (
-            100 / self.pitch - 1
+    def process_data(self) -> bool:
+        pygame.display.set_caption("A dance of fire and ice (Pygame version) (Loading...)")
+        self.camera_pos = Vec2()
+        self.camera_sight = 50
+        self.camera_angle = 0
+
+        try:
+            with open(
+                    self.path, "r", encoding="utf-8-sig"
+            ) as f:
+                string = f.read()
+                string = re.sub(",(?=\\s*?[}\\]])", "", string)  # 删除尾随逗号
+                self.level = json.loads(string, strict=False)
+        except UnicodeDecodeError:
+            messagebox.showerror("错误", "该谱面似乎没有使用utf-8-sig编码，所以不能解析。")
+            pygame.display.set_caption("A dance of fire and ice (Pygame version)")
+            return False
+        self.title = self.level["settings"]["artist"] + (
+            " - " if self.level["settings"]["artist"] and self.level["settings"]["song"] else "") + \
+                     self.level["settings"]["song"]
+        self.offset = self.level["settings"]["offset"] * 100 / self.pitch + 50 * (
+                100 / self.pitch - 1
         )
 
-        self.bg_color = "#" + beatmap["settings"]["backgroundColor"]
-        self.tiles = [                {
-                    "angle": 0,
-                    "bpm": 0,
-                    "twirl": False,
-                    "orbit": CLOCKWISE,
-                    "midspin": False,
-                    "pause": 0,
-                    "pos": Vec2(),
-                    "ms": 0,
-                    "beat": 0,
-                    "color": "#" + beatmap["settings"]["trackColor"]
-                    if "trackColor" in beatmap["settings"].keys()
-                    else "#debb7b",
-                    "border_color": "#" + beatmap["settings"]["secondaryTrackColor"]
-                    if "secondaryTrackColor" in beatmap["settings"].keys()
-                    else "#443310",
-                    # "color": "#debb7b",
-                    # "border_color": "#443310",
-                }]
-        path_data_dict = {'R': 0, 'p': 15, 'J': 30, 'E': 45, 'T': 60, 'o': 75, 'U': 90, 'q': 105, 'G': 120, 'Q':135, 'H':150, 'W':165, 'L': 180, 'x':195, 'N':210, 'Z':225, 'F':240, 'V':255, 'D':270, 'Y':285, 'B':300, 'C':315, 'M':330, 'A':345, '5':555, '6':666, '7':777, '8':888, '!':999}
-        for index in range(len(beatmap["angleData"] if "angleData" in beatmap else beatmap["pathData"])):
-            if "angleData" in beatmap:
-                angle = beatmap["angleData"][index]
-            elif "pathData" in beatmap:
-                angle = path_data_dict[beatmap["pathData"][index]]
+        text_title_shadow = self.font_title.render(self.title, True, "#00000099")
+        self.text_title = pygame.Surface(
+            Vec2(text_title_shadow.get_size()) + (2, 2), SRCALPHA
+        )
+        self.text_title.blit(text_title_shadow, (2, 2))
+        text_title = self.font_title.render(self.title, True, "#ffffff")
+        self.text_title.blit(text_title, (0, 0))
+
+        self.bg_color = "#" + self.level["settings"]["backgroundColor"]
+        self.tiles = [{
+            "angle": 0,
+            "bpm": 0,
+            "twirl": False,
+            "orbit": CLOCKWISE,
+            "midspin": False,
+            "pause": 0,
+            "pos": Vec2(),
+            "ms": 0,
+            "beat": 0,
+            "color": "#" + self.level["settings"]["trackColor"]
+            if "trackColor" in self.level["settings"].keys()
+            else "#debb7b",
+            "border_color": "#" + self.level["settings"]["secondaryTrackColor"]
+            if "secondaryTrackColor" in self.level["settings"].keys()
+            else "#443310",
+            # "color": "#debb7b",
+            # "border_color": "#443310",
+        }]
+        path_data_dict = {'R': 0, 'p': 15, 'J': 30, 'E': 45, 'T': 60, 'o': 75, 'U': 90, 'q': 105, 'G': 120, 'Q': 135,
+                          'H': 150, 'W': 165, 'L': 180, 'x': 195, 'N': 210, 'Z': 225, 'F': 240, 'V': 255, 'D': 270,
+                          'Y': 285, 'B': 300, 'C': 315, 'M': 330, 'A': 345, '5': 555, '6': 666, '7': 777, '8': 888,
+                          '!': 999}
+        for index in range(len(self.level["angleData"] if "angleData" in self.level else self.level["pathData"])):
+            if "angleData" in self.level:
+                angle = self.level["angleData"][index]
+            elif "pathData" in self.level:
+                angle = path_data_dict[self.level["pathData"][index]]
+            else:
+                messagebox.showerror("错误", "该谱面没有 angleData 或者 pathData，所以不能解析。")
+                self.level = None
+                self.title = ""
+                self.offset = 0
+                self.text_title = None
+                self.tiles.clear()
+                return False
 
             if angle == 999:
                 self.tiles[index]["midspin"] = True
@@ -297,20 +328,20 @@ class App:
                     "pos": Vec2(),
                     "ms": 0,
                     "beat": 0,
-                    "color": "#" + beatmap["settings"]["trackColor"]
-                    if "trackColor" in beatmap["settings"].keys()
+                    "color": "#" + self.level["settings"]["trackColor"]
+                    if "trackColor" in self.level["settings"].keys()
                     else "#debb7b",
-                    "border_color": "#" + beatmap["settings"]["secondaryTrackColor"]
-                    if "secondaryTrackColor" in beatmap["settings"].keys()
+                    "border_color": "#" + self.level["settings"]["secondaryTrackColor"]
+                    if "secondaryTrackColor" in self.level["settings"].keys()
                     else "#443310",
                     # "color": "#debb7b",
                     # "border_color": "#443310",
                 }
             )
 
-        self.tiles[0]["bpm"] = beatmap["settings"]["bpm"] * self.pitch / 100
+        self.tiles[0]["bpm"] = self.level["settings"]["bpm"] * self.pitch / 100
 
-        for action in beatmap["actions"]:
+        for action in self.level["actions"]:
             try:
                 tile = self.tiles[action["floor"]]
                 if tile["angle"] == 999:
@@ -337,7 +368,7 @@ class App:
                         for i in range(a, b + 1):
                             self.tiles[i]["color"] = "#" + action["trackColor"]
                             self.tiles[i]["border_color"] = (
-                                "#" + action["secondaryTrackColor"]
+                                    "#" + action["secondaryTrackColor"]
                             )
             except IndexError:
                 pass
@@ -392,11 +423,11 @@ class App:
                 tile["beat"] += last_tile["beat"]
 
         if (
-                "songFilename" in beatmap["settings"].keys()
-                and beatmap["settings"]["songFilename"] != ""
+                "songFilename" in self.level["settings"].keys()
+                and self.level["settings"]["songFilename"] != ""
         ):
             self.music_path = os.path.join(
-                os.path.dirname(self.path), beatmap["settings"]["songFilename"]
+                os.path.dirname(self.path), self.level["settings"]["songFilename"]
             )
             out_file = str(self.pitch) + " " + os.path.split(self.music_path)[1]
             out_file = os.path.join(os.path.split(self.music_path)[0], out_file)
@@ -407,11 +438,91 @@ class App:
             out_file = "(new) " + os.path.split(self.music_path)[1]
             out_file = os.path.join(os.path.split(self.music_path)[0], out_file)
             if not os.path.exists(out_file):
-                music.add_sound(self.music_path, out_file, self.offset, [tile["ms"] for tile in self.tiles])
+                if not music.add_sound(self.music_path, out_file, self.offset, [tile["ms"] for tile in self.tiles],
+                                       self.process_data_render_callback):
+                    self.state = STATE_SELECTING
+                    self.pitch = 100
+                    return False
             self.music_path = out_file
 
-    def process_autoplay_keyrain(self):
-        self.autoplay_keyrain = [[False for _ in range(round(self.tiles[-1]["ms"]) + 1000)].copy() for _ in self.keys]
+            pygame.mixer_music.load(self.music_path)
+            pygame.mixer_music.set_volume(0.3)
+
+        pygame.display.set_caption("A dance of fire and ice (Pygame version)")
+
+        return True
+
+    def process_data_render_callback(self, ratio):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                self.running = False
+                return False
+            if event.type == KEYDOWN:
+                if event.dict["key"] == K_ESCAPE:
+                    return False
+        self.screen.fill("#000000")
+        text = self.font_debug.render(f"Adding hit sounds... ({ratio * 100:.2f}%) (Press Esc to give up)", True,
+                                      "#ffffff")
+        self.screen.blit(text, text.get_rect(center=(self.width / 2, self.height / 2)))
+        pygame.display.flip()
+        self.clock.tick()
+        return True
+
+    def process_autoplay_key_rain(self):
+        self.autoplay_key_rain = [[False for _ in range(round(self.tiles[-1]["ms"]) + 1000)].copy() for _ in self.keys]
+        min_ms = 62
+        max_ms = 125
+        bpm = 2021
+        limit_ms = 60 / bpm * 1000
+        while limit_ms <= min_ms:
+            limit_ms *= 2
+        while limit_ms > max_ms:
+            limit_ms /= 2
+        print(limit_ms)
+        bpm_change = []
+        for index in range(len(self.tiles[2:])):
+            tile_bpm = self.tiles[index]["bpm"]
+            last_bpm = self.tiles[index - 1]["bpm"]
+            if (tile_bpm % (bpm / 2) == 0 or bpm % tile_bpm == 0) and not (
+                    last_bpm % (bpm / 2) == 0 or bpm % last_bpm == 0):
+                print(last_bpm, last_bpm % bpm == 0 or last_bpm % tile_bpm == 0)
+                bpm_change.append(index)
+
+        print(bpm_change)
+        count = 0
+        right = True
+        last_ms = 0
+        for index in range(1, len(self.tiles)):
+            tile = self.tiles[index]
+            tile_ms = round(tile["ms"])
+            if index in bpm_change:
+                count = 0
+                last_ms = tile["ms"]
+            if tile_ms - self.tiles[index - 1]["ms"] >= limit_ms:
+                count = 0
+            if ((tile["ms"] - last_ms) / limit_ms % 2 < 1 and not right or
+                    (tile["ms"] - last_ms) / limit_ms % 2 >= 1 and right):
+                count = 0
+                right = not right
+            for ms in range(tile_ms, tile_ms + 100):
+                if right:
+                    if count < 4:
+                        self.autoplay_key_rain[count + 10][ms] = True
+                    elif count < 6:
+                        self.autoplay_key_rain[count - 4 + 8][ms] = True
+                    elif count < 8:
+                        self.autoplay_key_rain[count - 6 + 14][ms] = True
+                else:
+                    if count < 4:
+                        self.autoplay_key_rain[5 - count][ms] = True
+                    elif count < 6:
+                        self.autoplay_key_rain[7 - count + 4][ms] = True
+                    elif count < 8:
+                        self.autoplay_key_rain[1 - count + 6][ms] = True
+            count += 1
+
+    def process_autoplay_key_rain_old(self):
+        self.autoplay_key_rain = [[False for _ in range(round(self.tiles[-1]["ms"]) + 1000)].copy() for _ in self.keys]
         min_ms = 125
         max_ms = 250
         bpm_change = [0]
@@ -420,7 +531,7 @@ class App:
             bpm2 = self.tiles[index - 1]["bpm"]
             if bpm1 != bpm2:
                 if ((bpm1 / bpm2) % 1 == 0 and int(bpm1 / bpm2) & int(bpm1 / bpm2 - 1) == 0 or
-                    (bpm2 / bpm1) % 1 == 0 and int(bpm2 / bpm1) & int(bpm2 / bpm1 - 1) == 0):
+                        (bpm2 / bpm1) % 1 == 0 and int(bpm2 / bpm1) & int(bpm2 / bpm1 - 1) == 0):
                     continue
                 bpm_change.append(index)
 
@@ -442,18 +553,18 @@ class App:
         #             count = 0
         #         for i in range(round(tile["ms"]), round(tile["ms"]) + 30):
         #             if count < 4:
-        #                 self.autoplay_keyrain[7 + count][i] = True
+        #                 self.autoplay_key_rain[7 + count][i] = True
         #             elif count < 6:
-        #                 self.autoplay_keyrain[4 + count][i] = True
+        #                 self.autoplay_key_rain[4 + count][i] = True
         #     else:
         #         if right:
         #             right = False
         #             count = 0
         #         for i in range(round(tile["ms"]), round(tile["ms"]) + 30):
         #             if count < 4:
-        #                 self.autoplay_keyrain[3 - count][i] = True
+        #                 self.autoplay_key_rain[3 - count][i] = True
         #             elif count < 6:
-        #                 self.autoplay_keyrain[4 - count][i] = True
+        #                 self.autoplay_key_rain[4 - count][i] = True
         #
         #     count += 1
         rev = False
@@ -479,23 +590,23 @@ class App:
                     yk = index < len(self.tiles) - 1 - 16 and self.tiles[index + 16]["ms"] - tile["ms"] < ms
             if yk:
                 ms /= 2
-            if (i - self.tiles[bpm_change_index]["ms"]) % ms < ms / 2 and not rev or\
-                (i - self.tiles[bpm_change_index]["ms"]) % ms >= ms / 2 and rev:
+            if (i - self.tiles[bpm_change_index]["ms"]) % ms < ms / 2 and not rev or \
+                    (i - self.tiles[bpm_change_index]["ms"]) % ms >= ms / 2 and rev:
                 if not right:
                     right = True
                     count = 0
                 if p_index != index:
                     for j in range(i, i + min(100, int(ms / 2.1))):
                         # if count < 4:
-                        #     self.autoplay_keyrain[7 + count][j] = True
+                        #     self.autoplay_key_rain[7 + count][j] = True
                         # elif count < 6:
-                        #     self.autoplay_keyrain[5 + count - 4][j] = True
+                        #     self.autoplay_key_rain[5 + count - 4][j] = True
                         if count < 4:
-                            self.autoplay_keyrain[10 + count][j] = True
+                            self.autoplay_key_rain[10 + count][j] = True
                         elif count < 6:
-                            self.autoplay_keyrain[8 + count - 4][j] = True
+                            self.autoplay_key_rain[8 + count - 4][j] = True
                         elif count < 8:
-                            self.autoplay_keyrain[14 + count - 6][j] = True
+                            self.autoplay_key_rain[14 + count - 6][j] = True
                         else:
                             rev = not rev
                             right = False
@@ -510,15 +621,15 @@ class App:
                 if p_index != index:
                     for j in range(i, i + min(100, int(ms / 2.1))):
                         # if count < 4:
-                        #     self.autoplay_keyrain[3 - count][j] = True
+                        #     self.autoplay_key_rain[3 - count][j] = True
                         # elif count < 6:
-                        #     self.autoplay_keyrain[5 - (count - 4)][j] = True
+                        #     self.autoplay_key_rain[5 - (count - 4)][j] = True
                         if count < 4:
-                            self.autoplay_keyrain[5 - count][j] = True
+                            self.autoplay_key_rain[5 - count][j] = True
                         elif count < 6:
-                            self.autoplay_keyrain[7 - count + 4][j] = True
+                            self.autoplay_key_rain[7 - count + 4][j] = True
                         elif count < 8:
-                            self.autoplay_keyrain[1 - count + 6][j] = True
+                            self.autoplay_key_rain[1 - count + 6][j] = True
                         else:
                             rev = not rev
                             right = True
@@ -529,7 +640,7 @@ class App:
                     count += 1
             p_index = index
 
-        self.autoplay_keyrain = tuple(self.autoplay_keyrain)
+        self.autoplay_key_rain = tuple(self.autoplay_key_rain)
 
     def execute(self) -> None:
         self.init()
@@ -545,6 +656,9 @@ class App:
     def event(self, event: pygame.event.Event) -> None:
         if event.type == QUIT:  # 退出程序
             self.running = False
+
+        if event.type == WINDOWRESIZED:  # 重新设置窗口大小
+            self.size = self.width, self.height = event.dict["x"], event.dict["y"]
 
         if event.type == KEYDOWN:
             if event.dict["key"] == K_F11:  # 全屏开关
@@ -564,16 +678,17 @@ class App:
                 if event.dict["key"] in self.keys:  # 打的键
                     self.keydown_event_count += 1
                     self.key_pressed[self.keys.index(event.dict["key"])] = True
-                elif event.dict["key"] == K_ESCAPE:  #  重开
+                elif event.dict["key"] == K_ESCAPE:  # 回到 CHARTING 模式
                     pygame.mixer_music.stop()
-                    # self.init()
                     self.timing_list.clear()
                     self.timing_sprites.clear()
                     self.state = STATE_CHARTING
             elif self.state == STATE_CHARTING:
+                angles45 = {K_d: 0, K_e: 45, K_w: 90, K_q: 135, K_a: 180, K_z: 225, K_s: 270, K_c: 315}
+
                 if event.dict["key"] == K_ESCAPE:  # 退出程序
                     self.running = False
-                elif event.dict["key"] == K_SPACE:
+                elif event.dict["key"] == K_SPACE:  # 玩
                     self.state = STATE_PLAYING
                     self.init()
                     if self.active_tile == -1:
@@ -591,6 +706,36 @@ class App:
                 elif event.dict["key"] == K_LEFT:
                     if self.active_tile != -1:
                         self.active_tile -= 1
+                elif event.dict["key"] == K_RETURN:  # 打开 .adofai 文件
+                    file = filedialog.askopenfilename(defaultextension=".adofai")
+                    if file:
+                        self.path = file
+                        self.process_data()
+                elif event.dict["key"] == K_p:
+                    flag = False
+                    str_pitch = ""
+                    while not str_pitch.isdigit():
+                        if flag:
+                            str_pitch = simpledialog.askstring("输入音高", "输入不是整数，请重新输入音高")
+                        else:
+                            str_pitch = simpledialog.askstring("输入音高", "请输入音高")
+                        if str_pitch is None:
+                            return
+                        flag = True
+                    self.pitch = int(str_pitch)
+                    self.process_data()
+
+                # elif event.dict["key"] in angles45:
+                #     if self.active_tile != -1:
+                #         self.add_tile(angles45[event.dict["key"]])
+
+            elif self.state == STATE_SELECTING:
+                if event.dict["key"] == K_RETURN:  # 打开 .adofai 文件
+                    file = filedialog.askopenfilename(defaultextension=".adofai")
+                    if file != "":
+                        self.path = file
+                        if self.process_data():
+                            self.state = STATE_CHARTING
 
         if event.type == KEYUP:
             if event.dict["key"] in self.keys:
@@ -612,6 +757,78 @@ class App:
                     self.camera_sight *= 1.1
                 elif event.dict["button"] == 5:
                     self.camera_sight /= 1.1
+
+    def add_tile(self, angle):
+        tile = self.tiles[self.active_tile]
+        if (angle - tile["angle"]) % 360 == 180:
+            if self.active_tile != 0:
+                del self.tiles[self.active_tile]
+                self.active_tile -= 1
+        else:
+            self.tiles.insert(self.active_tile + 1, {
+                "angle": angle,
+                "bpm": tile["bpm"],
+                "twirl": False,
+                "orbit": tile["orbit"],
+                "midspin": False,
+                "pause": 0,
+                "pos": Vec2(),
+                "ms": 0,
+                "beat": 0,
+                "color": "#" + self.level["settings"]["trackColor"]
+                if "trackColor" in self.level["settings"].keys()
+                else "#debb7b",
+                "border_color": "#" + self.level["settings"]["secondaryTrackColor"]
+                if "secondaryTrackColor" in self.level["settings"].keys()
+                else "#443310",
+            })
+            self.active_tile += 1
+        for index in range(len(self.tiles)):
+            tile = self.tiles[index]
+            last_tile = self.tiles[index - 1]
+
+            if tile["bpm"] == 0:
+                tile["bpm"] = last_tile["bpm"]
+            elif tile["bpm"] < 0:
+                tile["bpm"] = last_tile["bpm"] * -tile["bpm"]
+
+            if index == 0:
+                tile["orbit"] = not tile["twirl"]
+            elif tile["twirl"]:
+                tile["orbit"] = not last_tile["orbit"]
+            else:
+                tile["orbit"] = last_tile["orbit"]
+
+            if index == 0:
+                tile["pos"] = Vec2()
+            elif tile["midspin"]:
+                tile["pos"] = last_tile["pos"]
+            else:
+                tile["pos"] = last_tile["pos"] + move_step(
+                    tile["angle"]
+                )
+
+            if index == 0:
+                tile["beat"] = 0
+                tile["ms"] = 0
+            else:
+                if last_tile["midspin"]:
+                    angle = last_tile["angle"] - tile["angle"]
+                else:
+                    angle = last_tile["angle"] - 180 - tile["angle"]
+                if last_tile["orbit"] == COUNTERCLOCKWISE:
+                    angle *= -1
+                angle %= 360
+                if angle == 0:
+                    angle = 360
+                if index == 1:
+                    angle -= 180
+                tile["beat"] = angle / 180 + last_tile["pause"]
+                tile["ms"] = (
+                        last_tile["ms"]
+                        + tile["beat"] / (last_tile["bpm"] / 60) * 1000
+                )
+                tile["beat"] += last_tile["beat"]
 
     def loop(self) -> None:
         global STATE_PLAYING
@@ -659,15 +876,15 @@ class App:
             else:
                 if self.player_now_tile + 1 < len(self.tiles):
                     self.timing = (
-                        self.timer
-                        - self.tiles[self.player_now_tile + 1]["ms"]
-                        + self.timing_offset
+                            self.timer
+                            - self.tiles[self.player_now_tile + 1]["ms"]
+                            + self.timing_offset
                     )
 
             self.calc_beat()
             if (
-                floor(self.pre_beat) != floor(self.beat)
-                and -4 <= floor(self.beat) <= -1
+                    floor(self.pre_beat) != floor(self.beat)
+                    and -4 <= floor(self.beat) <= -1
             ):  # 准备的声音
                 self.channel_ready.play(self.sound_ready)
             if self.pre_tile != self.now_tile:
@@ -679,7 +896,7 @@ class App:
 
             if not self.autoplay:  # 错过判定
                 while (
-                    self.timing > self.LE and self.player_now_tile < len(self.tiles) - 1
+                        self.timing > self.LE and self.player_now_tile < len(self.tiles) - 1
                 ):
                     self.player_now_tile += 1
                     self.tl += 1
@@ -692,25 +909,25 @@ class App:
                     self.calc_beat()
                     if self.player_now_tile + 1 < len(self.tiles):
                         self.timing = (
-                            self.timer
-                            - self.tiles[self.player_now_tile + 1]["ms"]
-                            + self.timing_offset
+                                self.timer
+                                - self.tiles[self.player_now_tile + 1]["ms"]
+                                + self.timing_offset
                         )
             for i in range(self.keydown_event_count):
                 self.keydown_event()
                 if self.autoplay:
                     if self.now_tile + 1 < len(self.tiles):
                         self.timing = (
-                            self.timer
-                            - self.tiles[self.now_tile + 1]["ms"]
-                            + self.timing_offset
+                                self.timer
+                                - self.tiles[self.now_tile + 1]["ms"]
+                                + self.timing_offset
                         )
                 else:
                     if self.player_now_tile + 1 < len(self.tiles):
                         self.timing = (
-                            self.timer
-                            - self.tiles[self.player_now_tile + 1]["ms"]
-                            + self.timing_offset
+                                self.timer
+                                - self.tiles[self.player_now_tile + 1]["ms"]
+                                + self.timing_offset
                         )
                 self.calc_beat()
 
@@ -729,22 +946,22 @@ class App:
             while index < len(self.timing_sprites):
                 self.timing_sprites[index][2] += self.delta
                 if (
-                    self.timing_sprites[index][2] >= 5000
-                    or len(self.timing_sprites) > 500
+                        self.timing_sprites[index][2] >= 5000
+                        or len(self.timing_sprites) > 500
                 ):
                     del self.timing_sprites[index]
                     continue
                 index += 1
 
-            for i in range(len(self.keyrain)):
-                self.keyrain[i].pop()
-                if self.autoplay and self.autoplay_keyrain:
-                    if 0 <= self.timer < len(self.autoplay_keyrain[0]):
-                        self.keyrain[i].insert(0, self.autoplay_keyrain[i][self.timer])
+            for i in range(len(self.key_rain)):
+                self.key_rain[i].pop()
+                if self.autoplay and self.autoplay_key_rain:
+                    if 0 <= self.timer < len(self.autoplay_key_rain[0]):
+                        self.key_rain[i].insert(0, self.autoplay_key_rain[i][self.timer])
                     else:
-                        self.keyrain[i].insert(0, False)
+                        self.key_rain[i].insert(0, False)
                 else:
-                    self.keyrain[i].insert(0, self.key_pressed[i])
+                    self.key_rain[i].insert(0, self.key_pressed[i])
 
             self.pre_beat = self.beat
             self.pre_tile = self.now_tile
@@ -766,20 +983,20 @@ class App:
         elif not self.autoplay and self.player_now_tile < len(self.tiles) - 1:
             self.timing_list.append([self.timing, 0])
             self.timing = (
-                self.timer
-                - self.tiles[self.player_now_tile + 1]["ms"]
-                + self.timing_offset
+                    self.timer
+                    - self.tiles[self.player_now_tile + 1]["ms"]
+                    + self.timing_offset
             )  #
             self.player_now_tile += 1
             self.judge()
 
     def judge(self) -> None:
         pos = self.tiles[self.now_tile if self.autoplay else self.player_now_tile][
-            "pos"
-        ] + (0, 0.5)
+                  "pos"
+              ] + (0, 0.5)
         if abs(self.timing) <= self.P:
             self.p += 1
-            self.timing_sprites.append(["P!", pos, 0])
+            # self.timing_sprites.append(["P!", pos, 0])
         elif abs(self.timing) <= self.LEP:
             if self.timing > 0:
                 self.lp += 1
@@ -852,10 +1069,10 @@ class App:
             self.planet_angle += (self.beat - self.player_beat) * 180
         if not self.autoplay:
             angle = (
-                self.timing_offset
-                / (60 / self.tiles[now_tile]["bpm"])
-                / 1000
-            ) * 180
+                            self.timing_offset
+                            / (60 / self.tiles[now_tile]["bpm"])
+                            / 1000
+                    ) * 180
             if self.tiles[now_tile]["orbit"] == CLOCKWISE:
                 self.planet_angle -= angle
             else:
@@ -894,7 +1111,7 @@ class App:
             #         self.camera_pos.x -= speed * self.delta
             if keys_pressed[K_RETURN]:
                 self.camera_pos = self.tiles[self.now_tile if self.autoplay else self.player_now_tile]["pos"].copy()
-        else:
+        elif self.state == STATE_PLAYING:
             # 视野
             camera_sight = max(
                 10.0, min(200.0, 500 / cbrt(self.tiles[self.now_tile]["bpm"]))
@@ -902,20 +1119,21 @@ class App:
             self.camera_sight += (camera_sight - self.camera_sight) / 1000 * self.delta
             # 位置
             self.camera_pos += (
-                self.tiles[self.now_tile if self.autoplay else self.player_now_tile]["pos"]
-                - self.camera_pos
-            ) / (
-                (self.tiles[self.now_tile]["bpm"] + 10000)
-                / self.tiles[self.now_tile]["bpm"]
-            )
+                                       self.tiles[self.now_tile if self.autoplay else self.player_now_tile]["pos"]
+                                       - self.camera_pos
+                               ) / (
+                                       (self.tiles[self.now_tile]["bpm"] + 10000)
+                                       / self.tiles[self.now_tile]["bpm"]
+                               )
+        elif self.state == STATE_SELECTING:
+            pass
 
     def render(self) -> None:
         # self.screen.fill("#10131A")
         self.screen.fill(self.bg_color)
 
-        self.render_tiles()
-
         if self.state == STATE_CHARTING:
+            self.render_tiles()
             if self.active_tile != -1:
                 tile = self.tiles[self.active_tile]
                 text_list = [str(tile["angle"]) + "°"]
@@ -929,6 +1147,7 @@ class App:
                 self.screen.blit(text, self.convert_pos(self.tiles[self.active_tile]["pos"]))
 
         elif self.state == STATE_PLAYING:
+            self.render_tiles()
             # 绘制行星
             pygame.draw.circle(
                 self.screen,
@@ -1017,16 +1236,19 @@ class App:
                 text_cnt,
                 text_cnt.get_rect(centerx=self.width // 2, bottom=self.height - 40),
             )
+        elif self.state == STATE_SELECTING:
+            pass
         self.render_text()
         if self.state == STATE_PLAYING:
-            self.render_keyrain()
+            self.render_key_rain()
 
         pygame.display.flip()
 
     def render_text(self) -> None:
-        self.screen.blit(
-            self.text_title, self.text_title.get_rect(centerx=self.width // 2, y=50)
-        )
+        if self.text_title:
+            self.screen.blit(
+                self.text_title, self.text_title.get_rect(centerx=self.width // 2, y=50)
+            )
 
         text_debug = self.font_debug.render(
             f"FPS: {self.clock.get_fps():.3f}/{self.FPS}",
@@ -1073,8 +1295,12 @@ class App:
                 "XAcc: " + (f"{x_acc:.2f}%".rjust(10)),
                 "Time: " + (f"{minute:0>2}:{sec:0>2}".rjust(10)),
             ]
+        elif self.state == STATE_CHARTING:
+            text_list = ["[Tips]", "Fullscreen: F11", "Autoplay: F12", "Play: Space", "Exit: Esc", "Pitch: P"]
+        elif self.state == STATE_SELECTING:
+            text_list = ["Please select a level!", "Press the enter key to select."]
         else:
-            text_list = ["[Tips]", "Fullscreen: F11", "Autoplay: F12", "Play: Space", "Exit: Esc"]
+            text_list = []
         for i in range(len(text_list)):
             text = self.font_debug.render(
                 text_list[i],
@@ -1105,9 +1331,9 @@ class App:
             (length / 2 + border_length * 2, length + border_length * 2), SRCALPHA
         )
         stop = min(
-                len(self.tiles) - 1,
-                (self.now_tile if self.autoplay else self.player_now_tile) + 256,
-            ) if self.state == STATE_PLAYING else len(self.tiles) - 1
+            len(self.tiles) - 1,
+            (self.now_tile if self.autoplay else self.player_now_tile) + 256,
+        ) if self.state == STATE_PLAYING else len(self.tiles) - 1
         # stop = len(self.tiles) - 1
         for index in range(stop, -1, -1):  # 倒序
             if not self.render_tile_check(index):
@@ -1139,7 +1365,6 @@ class App:
             else:
                 last_tile = None
 
-            
             border_color = tile["border_color"]
             color = tile["color"]
             if self.state == STATE_CHARTING:
@@ -1149,10 +1374,10 @@ class App:
             alpha = 255
             if self.state == STATE_PLAYING:
                 if index < (
-                    self.now_tile if self.autoplay else self.player_now_tile
+                        self.now_tile if self.autoplay else self.player_now_tile
                 ):  # 消失动画
                     alpha = 255 - (
-                        self.timer - (self.tiles[index]["ms"] if index != 0 else 0) - 200
+                            self.timer - (self.tiles[index]["ms"] if index != 0 else 0) - 200
                     )
                     if alpha <= 0:
                         break
@@ -1179,10 +1404,10 @@ class App:
                         new_half_sqr_border,
                         new_half_sqr_border.get_rect(
                             center=(
-                                length + border_length * 2,
-                                length + border_length * 2,
-                            )
-                            - length / 4 * move_step2(180 - tile["angle"])
+                                       length + border_length * 2,
+                                       length + border_length * 2,
+                                   )
+                                   - length / 4 * move_step2(180 - tile["angle"])
                         ),
                     )
                     pygame.draw.polygon(
@@ -1199,11 +1424,11 @@ class App:
                         new_tri_border,
                         new_tri_border.get_rect(
                             center=(
-                                length + border_length * 2,
-                                length + border_length * 2,
-                            )
-                            + (length / 4 + border_length * 2)
-                            * move_step2(180 - tile["angle"])
+                                       length + border_length * 2,
+                                       length + border_length * 2,
+                                   )
+                                   + (length / 4 + border_length * 2)
+                                   * move_step2(180 - tile["angle"])
                         ),
                     )
                 else:
@@ -1222,10 +1447,10 @@ class App:
                             new_half_sqr_border,
                             new_half_sqr_border.get_rect(
                                 center=(
-                                    length + border_length * 2,
-                                    length + border_length * 2,
-                                )
-                                + length / 4 * move_step(-next_tile["angle"])
+                                           length + border_length * 2,
+                                           length + border_length * 2,
+                                       )
+                                       + length / 4 * move_step(-next_tile["angle"])
                             ),
                         )
                     else:
@@ -1238,10 +1463,10 @@ class App:
                                 new_square_border,
                                 new_square_border.get_rect(
                                     center=(
-                                        length + border_length * 2,
-                                        length + border_length * 2,
-                                    )
-                                    - length / 2 * move_step2(-self.tiles[i]["angle"])
+                                               length + border_length * 2,
+                                               length + border_length * 2,
+                                           )
+                                           - length / 2 * move_step2(-self.tiles[i]["angle"])
                                 ),
                             )
                             new_square = pygame.transform.rotate(square, self.tiles[i]["angle"])
@@ -1268,10 +1493,10 @@ class App:
                             new_square_border,
                             new_square_border.get_rect(
                                 center=(
-                                    length + border_length * 2,
-                                    length + border_length * 2,
-                                )
-                                + length / 2 * move_step(-next_tile["angle"])
+                                           length + border_length * 2,
+                                           length + border_length * 2,
+                                       )
+                                       + length / 2 * move_step(-next_tile["angle"])
                             ),
                         )
                         new_square_border = pygame.transform.rotate(
@@ -1281,10 +1506,10 @@ class App:
                             new_square_border,
                             new_square_border.get_rect(
                                 center=(
-                                    length + border_length * 2,
-                                    length + border_length * 2,
-                                )
-                                - length / 2 * move_step(-tile["angle"])
+                                           length + border_length * 2,
+                                           length + border_length * 2,
+                                       )
+                                       - length / 2 * move_step(-tile["angle"])
                             ),
                         )
 
@@ -1295,10 +1520,10 @@ class App:
                         new_half_sqr,
                         new_half_sqr.get_rect(
                             center=(
-                                length + border_length * 2,
-                                length + border_length * 2,
-                            )
-                            - length / 4 * move_step2(180 - tile["angle"])
+                                       length + border_length * 2,
+                                       length + border_length * 2,
+                                   )
+                                   - length / 4 * move_step2(180 - tile["angle"])
                         ),
                     )
                     pygame.draw.polygon(
@@ -1311,10 +1536,10 @@ class App:
                         new_tri,
                         new_tri.get_rect(
                             center=(
-                                length + border_length * 2,
-                                length + border_length * 2,
-                            )
-                            + length / 4 * move_step2(180 - tile["angle"])
+                                       length + border_length * 2,
+                                       length + border_length * 2,
+                                   )
+                                   + length / 4 * move_step2(180 - tile["angle"])
                         ),
                     )
                 else:
@@ -1333,10 +1558,10 @@ class App:
                             new_half_sqr,
                             new_half_sqr.get_rect(
                                 center=(
-                                    length + border_length * 2,
-                                    length + border_length * 2,
-                                )
-                                - length / 4 * move_step(-tile["angle"])
+                                           length + border_length * 2,
+                                           length + border_length * 2,
+                                       )
+                                       - length / 4 * move_step(-tile["angle"])
                             ),
                         )
                     else:
@@ -1346,10 +1571,10 @@ class App:
                             new_square,
                             new_square.get_rect(
                                 center=(
-                                    length + border_length * 2,
-                                    length + border_length * 2,
-                                )
-                                + length / 2 * move_step(-(next_tile["angle"]))
+                                           length + border_length * 2,
+                                           length + border_length * 2,
+                                       )
+                                       + length / 2 * move_step(-(next_tile["angle"]))
                             ),
                         )
                         new_square = pygame.transform.rotate(
@@ -1359,15 +1584,16 @@ class App:
                             new_square,
                             new_square.get_rect(
                                 center=(
-                                    length + border_length * 2,
-                                    length + border_length * 2,
-                                )
-                                - length / 2 * move_step(-tile["angle"])
+                                           length + border_length * 2,
+                                           length + border_length * 2,
+                                       )
+                                       - length / 2 * move_step(-tile["angle"])
                             ),
                         )
             else:
                 rect_border.fill(border_color[:7])
-                new_rect_border = pygame.transform.rotate(rect_border, next_tile["angle"] if next_tile else tile["angle"])
+                new_rect_border = pygame.transform.rotate(rect_border,
+                                                          next_tile["angle"] if next_tile else tile["angle"])
                 surf_tile.blit(
                     new_rect_border,
                     new_rect_border.get_rect(
@@ -1430,12 +1656,12 @@ class App:
 
         tile = self.tiles[index]
         if not (
-            -self.planet_size * self.camera_sight
-            <= self.convert_pos(tile["pos"]).x
-            <= self.width + self.planet_size * self.camera_sight
-            and -self.planet_size * self.camera_sight
-            <= self.convert_pos(tile["pos"]).y
-            <= self.height + self.planet_size * self.camera_sight
+                -self.planet_size * self.camera_sight
+                <= self.convert_pos(tile["pos"]).x
+                <= self.width + self.planet_size * self.camera_sight
+                and -self.planet_size * self.camera_sight
+                <= self.convert_pos(tile["pos"]).y
+                <= self.height + self.planet_size * self.camera_sight
         ):
             return False
 
@@ -1445,23 +1671,23 @@ class App:
 
         return True
 
-    def render_keyrain(self):
+    def render_key_rain(self):
         rect = pygame.Surface((40, 3), SRCALPHA)
         small_rect = pygame.Surface((20, 3), SRCALPHA)
-        pos = [
-            (0, 1),
-            (1, 1),
-            (2, 1),
-            (3, 1),
-            (2, 0),
-            (3.5, 0),
-            (5, 0),
-            (4, 1),
-            (5, 1),
-            (6, 1),
-            (7, 1),
-        ]
-        name = list("QWERV_NUIOP")
+        # pos = [
+        #     (0, 1),
+        #     (1, 1),
+        #     (2, 1),
+        #     (3, 1),
+        #     (2, 0),
+        #     (3.5, 0),
+        #     (5, 0),
+        #     (4, 1),
+        #     (5, 1),
+        #     (6, 1),
+        #     (7, 1),
+        # ]
+        # name = list("QWERV_NUIOP")
 
         pos = [
             (0, 0),
@@ -1481,12 +1707,13 @@ class App:
             (6, 0),
             (7, 0)
         ]
-        name = "LSft,Caps,Tab,1,2,E,C,_,RAlt,.,P,=,←,\\,Ret,RSft".split(",")
+        # name = "LSft,Caps,Tab,1,2,E,C,_,RAlt,.,P,=,←,\\,Ret,RSft".split(",")
+        name = ["" for _ in range(16)]
         if self.autoplay:
-            if self.autoplay_keyrain and 0 <= self.timer < len(self.autoplay_keyrain[0]):
+            if self.autoplay_key_rain and 0 <= self.timer < len(self.autoplay_key_rain[0]):
                 key_pressed = []
                 for index in range(len(self.keys)):
-                    key_pressed.append(self.autoplay_keyrain[index][self.timer])
+                    key_pressed.append(self.autoplay_key_rain[index][self.timer])
             else:
                 key_pressed = self.key_pressed
         else:
@@ -1516,14 +1743,14 @@ class App:
             )
         for i in range(len(self.keys)):
             for j in range(120):
-                if self.keyrain[i][j] and pos[i][1]:
+                if self.key_rain[i][j] and pos[i][1]:
                     rect.fill((255, 255, 255, max(0, min(255, 1000 - j * 10))))
                     self.screen.blit(
                         rect, (10 + pos[i][0] * 42, self.height - 15 - 82 - j * 3)
                     )
         for i in range(len(self.keys)):
             for j in range(120):
-                if self.keyrain[i][j] and not pos[i][1]:
+                if self.key_rain[i][j] and not pos[i][1]:
                     small_rect.fill((255, 0, 255, max(0, min(255, 1000 - j * 10))))
                     self.screen.blit(
                         small_rect, (20 + pos[i][0] * 42, self.height - 15 - 82 - j * 3)
@@ -1557,27 +1784,29 @@ class App:
 if __name__ == "__main__":
     debugging = False
 
-    path_to_beatmap = "Levels/2021/fixed.adofai"
-    pitch = 100
     if not debugging:
-        try:
-            print("Adofai (Pygame ver.) 冰与火之舞 Pygame版 By Ckblt")
-            print("支持按 Q W E R V 空格(Space) N U I O P 键")
-            path_to_beatmap = input("输入谱面的路径 (Enter the path to the beatmap) : ")
-            pitch = input("输入音高，默认100 (Enter the pitch) : ")
-            if pitch == "":
-                pitch = 100
-            else:
-                pitch = int(pitch)
-        except ValueError:
-            # traceback.print_exc()
-            print("出错了！输入的音高不是整数。 (Please enter an integer)")
-            input("按下回车键继续…… (Press the enter key to continue)")
-            exit(1)
+        # try:
+        #     print("Adofai (Pygame ver.) 冰与火之舞 Pygame版 By Ckblt")
+        #     print("支持按 Q W E R V 空格(Space) N U I O P 键")
+        #     path_to_level = input("输入谱面的路径 (Enter the path to the level) : ")
+        #     pitch = input("输入音高，默认100 (Enter the pitch) : ")
+        #     if pitch == "":
+        #         pitch = 100
+        #     else:
+        #         pitch = int(pitch)
+        # except ValueError:
+        #     # traceback.print_exc()
+        #     print("出错了！输入的音高不是整数。 (Please enter an integer)")
+        #     input("按下回车键继续…… (Press the enter key to continue)")
+        #     exit(1)
+        path_to_level = ""
+    else:
+        path_to_level = "Levels/2021/fixed.adofai"
+    pitch = 100
 
     try:
         print("加载中…… (Loading...)")
-        theApp = App(path_to_beatmap, pitch)
+        theApp = App(path_to_level, pitch)
         print("加载完成！你现在应该会看到一个Pygame窗口。 (Complete!)")
         theApp.execute()
     except (SystemExit, KeyboardInterrupt):

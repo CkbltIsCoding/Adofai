@@ -4,89 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="keyrain plusplus">
-      <change afterPath="$PROJECT_DIR$/2021/(new) 200Hello_BPM_2021_Mix.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2021/(new) Hello_BPM_2021_Mix.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2021/200Hello_BPM_2021_Mix.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/(new) かめりあ_Camellia_-Hello-_BPM_-2022.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/8_BokeB&amp;W.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Outer Circle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Outer Square_45Degree.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Rainbow_Gradient.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Rune Letters.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Starfield1_Glow_Nickname.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7_4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7_5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/Starfield_Nickname_7_6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_10tiles.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_30tiles.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_OrangeFJ_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_OrangeFJ_04.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_OrangeFJ_05.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_arrow_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_asdf.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_asdfasdf.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_asdfasdfasdf.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_blackhole.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_buildings_Nickname.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_credit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_cross_03.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_crystal1_Nickname.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_crystal1_blur.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_crystal2_Nickname.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_crystal2_blur.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_crystal_Nickname.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_crystal_blur.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_full_circle_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_01_copied.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_12341.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_full_square_123414242123.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_grass2_01_Nickname.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_grass2_01_Nickname2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_grid_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_letterbox_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_letterbox_wshadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_light_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_light_01_copied.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_light_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_light_03.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_magicshape.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_magicshape3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_magicshape3_thin.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_next.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_thin_circle_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_thin_circle_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_thin_square_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_twenty.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_two.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/deco_vignette_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/grass.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/grass2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/grass3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/grass4_2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/grass4_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/grass4_4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/main.adofai" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/p43.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2022/かめりあ_Camellia_-Hello-_BPM_-2022.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2023/かめりあ(Camellia) - Hello (BPM) 2023.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/2024/かめりあ(Camellia) - Hello (BPM) 2024.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JipperEX_Unnerfed/(new) zsry - Jipper EX.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JipperEX_Unnerfed/Jipper EX.adofai" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/JipperEX_Unnerfed/zsry - Jipper EX.ogg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/beat.ogg" afterDir="false" />
+    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="fix the json comma problem">
       <change afterPath="$PROJECT_DIR$/beat_to_adofai.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo/main.adofai" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/simplify.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2023/main.adofai" beforeDir="false" afterPath="$PROJECT_DIR$/2023/main.adofai" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2024/main.adofai" beforeDir="false" afterPath="$PROJECT_DIR$/2024/main.adofai" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/music.py" beforeDir="false" afterPath="$PROJECT_DIR$/music.py" afterDir="false" />
     </list>
@@ -155,6 +77,7 @@
       <recent name="D:\Projects\Pycharm Projects\Adofai\2024" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Projects\Pycharm Projects\Adofai\Levels" />
       <recent name="D:\Projects\Pycharm Projects\Adofai\2024" />
       <recent name="D:\Projects\Pycharm Projects\Adofai" />
       <recent name="D:\Projects\Pycharm Projects\Adofai\FS" />
@@ -232,7 +155,31 @@
       <option name="project" value="LOCAL" />
       <updated>1726392783290</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fix some problems">
+      <option name="closed" value="true" />
+      <created>1727774932467</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1727774932467</updated>
+    </task>
+    <task id="LOCAL-00006" summary="add beat.ogg">
+      <option name="closed" value="true" />
+      <created>1727775071080</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1727775071080</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fix the json comma problem">
+      <option name="closed" value="true" />
+      <created>1727923302884</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1727923302884</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -252,6 +199,9 @@
     <MESSAGE value="init2" />
     <MESSAGE value="support .adofai files" />
     <MESSAGE value="keyrain plusplus" />
-    <option name="LAST_COMMIT_MESSAGE" value="keyrain plusplus" />
+    <MESSAGE value="fix some problems" />
+    <MESSAGE value="add beat.ogg" />
+    <MESSAGE value="fix the json comma problem" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix the json comma problem" />
   </component>
 </project>
