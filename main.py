@@ -262,9 +262,9 @@ class App:
             messagebox.showerror("错误", "该谱面似乎没有使用utf-8-sig编码，所以不能解析。")
             pygame.display.set_caption("A dance of fire and ice (Pygame version)")
             return False
-        self.title = self.level["settings"]["artist"] + (
-            " - " if self.level["settings"]["artist"] and self.level["settings"]["song"] else "") + \
-                     self.level["settings"]["song"]
+        artist = re.sub("<[^>]*>", "", self.level["settings"]["artist"])
+        song = re.sub("<[^>]*>", "", self.level["settings"]["song"])
+        self.title = artist + (" - " if artist and song else "") + song
         self.offset = self.level["settings"]["offset"] * 100 / self.pitch + 50 * (
                 100 / self.pitch - 1
         )
@@ -348,7 +348,7 @@ class App:
                     tile = self.tiles[action["floor"] - 1]
                 match action["eventType"]:
                     case "SetSpeed":
-                        if action["speedType"] == "Bpm":
+                        if "speedType" not in action or action["speedType"] == "Bpm":
                             tile["bpm"] = action["beatsPerMinute"] * self.pitch / 100
                         elif action["speedType"] == "Multiplier":
                             tile["bpm"] = -action["bpmMultiplier"]

@@ -15,7 +15,7 @@ def add_sound(in_file, out_file, offset, ms_list: list[int], callback):
     else:
         frame_rate = 44100
         audio = AudioSegment.silent(offset + ms_list[-1] + 1000, frame_rate)
-    beat = AudioSegment.from_file("beat2.ogg", frame_rate=frame_rate) - 3
+    beat = AudioSegment.from_file("beat.ogg", frame_rate=frame_rate) - 3
     beats = AudioSegment.silent(ms_list[-1] + 1000, frame_rate)
     for index in range(len(ms_list)):
         beats = beats.overlay(beat, ms_list[index])

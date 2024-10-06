@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="enter the path or the pitch in a dialog">
+    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="optimize2 (fix)">
       <change afterPath="$PROJECT_DIR$/Levels/BA/TOUHOU - Bad Apple!!.mid_Track 0.adofai" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/beat2.ogg" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/beat_to_adofai.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/simplify.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/tile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/music.py" beforeDir="false" afterPath="$PROJECT_DIR$/music.py" afterDir="false" />
@@ -190,7 +189,23 @@
       <option name="project" value="LOCAL" />
       <updated>1728032532949</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="optimize">
+      <option name="closed" value="true" />
+      <created>1728042012999</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1728042012999</updated>
+    </task>
+    <task id="LOCAL-00010" summary="optimize2 (fix)">
+      <option name="closed" value="true" />
+      <created>1728042039417</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1728042039417</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -214,6 +229,8 @@
     <MESSAGE value="add beat.ogg" />
     <MESSAGE value="fix the json comma problem" />
     <MESSAGE value="enter the path or the pitch in a dialog" />
-    <option name="LAST_COMMIT_MESSAGE" value="enter the path or the pitch in a dialog" />
+    <MESSAGE value="optimize" />
+    <MESSAGE value="optimize2 (fix)" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimize2 (fix)" />
   </component>
 </project>
