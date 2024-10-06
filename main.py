@@ -1349,6 +1349,8 @@ class App:
             (length / 2 + border_length * 2, length + border_length * 2), SRCALPHA
         )
         start = bisect_left(self.tiles, self.timer - 2000, key=lambda tile: tile["ms"]) - 1
+        if start + 1 >= len(self.tiles):
+            start = len(self.tiles) - 1 - 1
         stop = min(
             len(self.tiles) - 1,
             (self.now_tile if self.autoplay else self.player_now_tile) + 256,
