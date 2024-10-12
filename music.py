@@ -19,15 +19,16 @@ def add_sound(in_file, out_file, offset, ms_list: list[int], callback):
     beats = AudioSegment.silent(ms_list[-1] + 1000, frame_rate)
     for index in range(len(ms_list)):
         beats = beats.overlay(beat, ms_list[index])
-        if index % 100 == 0:
+        if index % 20 == 0:
             # print(f"Loading... ({index / len(ms_list) * 100:.2f}%)")
             if not callback((index + 1) / len(ms_list)):
                 return False
         # if index == 10000:
         #     (audio - 2).overlay(beats + 3, offset).export(out_file, format="ogg")
         #     return True
+    callback(1)
     (audio - 2).overlay(beats + 3, offset).export(out_file, format="ogg")
     return True
 
 
-change_speed("beat.ogg", "beat2.ogg", 10)
+# change_speed("beat.ogg", "beat2.ogg", 10)
