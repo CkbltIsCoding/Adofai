@@ -1736,7 +1736,7 @@ class App:
                             center=(length + border_length * 2, length + border_length * 2)
                         ),
                     )
-                memory[key] = surf_tile
+                # memory[key] = surf_tile  # 麻痹的 还有bug 干脆不用了
 
             new_surf_tile = surf_tile.copy()
 
