@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="support bgImage &amp; support moveCamera event (except position) &amp; support RecolorTrack event (but buggy) &amp; improve judgement">
+    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="disabled &quot;memory&quot; variable">
       <change afterPath="$PROJECT_DIR$/Levels/BA/TOUHOU - Bad Apple!!.mid_Track 0.adofai" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/beat2.ogg" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/beat_to_adofai.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/simplify.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/tile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,7 +226,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728719828200</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="disabled &quot;memory&quot; variable">
+      <option name="closed" value="true" />
+      <created>1728722040190</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1728722040190</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -256,6 +263,7 @@
     <MESSAGE value="fix the speedType missing problem &amp; the hitsound" />
     <MESSAGE value="fix the last tile hiding problem" />
     <MESSAGE value="support bgImage &amp; support moveCamera event (except position) &amp; support RecolorTrack event (but buggy) &amp; improve judgement" />
-    <option name="LAST_COMMIT_MESSAGE" value="support bgImage &amp; support moveCamera event (except position) &amp; support RecolorTrack event (but buggy) &amp; improve judgement" />
+    <MESSAGE value="disabled &quot;memory&quot; variable" />
+    <option name="LAST_COMMIT_MESSAGE" value="disabled &quot;memory&quot; variable" />
   </component>
 </project>

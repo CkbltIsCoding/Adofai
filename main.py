@@ -1772,7 +1772,7 @@ class App:
                 new_surf_tile = pygame.transform.scale_by(new_surf_tile, orig_length / max_length)
             # 显示砖块
             if tile["midspin"]:
-                pos = orig_length * 2 * move_step(tile["angle"])
+                pos = orig_length * 2 * move_step(tile["angle"] - self.camera_angle)
                 pos.y *= -1
                 self.screen.blit(
                     new_surf_tile,
