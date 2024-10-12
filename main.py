@@ -463,13 +463,13 @@ class App:
             self.music_path = os.path.join(
                 os.path.dirname(self.path), self.level["settings"]["songFilename"]
             )
-            out_file = str(self.pitch) + " " + os.path.split(self.music_path)[1]
+            out_file = str(self.pitch) + " " + os.path.splitext(os.path.split(self.music_path)[1])[0] + ".wav"
             out_file = os.path.join(os.path.split(self.music_path)[0], out_file)
             if self.pitch != 100:
                 if not os.path.exists(out_file):
                     music.change_speed(self.music_path, out_file, self.pitch / 100)
                 self.music_path = out_file
-            out_file = "(new) " + os.path.split(self.music_path)[1]
+            out_file = "(new) " + os.path.splitext(os.path.split(self.music_path)[1])[0] + ".wav"
             out_file = os.path.join(os.path.split(self.music_path)[0], out_file)
             if not os.path.exists(out_file):
                 if not music.add_sound(self.music_path, out_file, self.offset, [tile["ms"] for tile in self.tiles],
@@ -480,7 +480,7 @@ class App:
             pygame.mixer_music.load(self.music_path)
             pygame.mixer_music.set_volume(0.3)
         else:
-            out_file = str(self.pitch) + " " + os.path.splitext(os.path.split(self.path)[1])[0] + ".ogg"
+            out_file = str(self.pitch) + " " + os.path.splitext(os.path.split(self.path)[1])[0] + ".wav"
             out_file = os.path.join(os.path.split(self.path)[0], out_file)
             self.music_path = out_file
             if (not os.path.exists(self.music_path)
@@ -908,6 +908,7 @@ class App:
                     if self.active_tile > 0:
                         pygame.mixer_music.play()
                         self.music_played = True
+                        pygame.mixer_music.rewind()
                         pygame.mixer_music.set_pos(self.offset / 1000 + self.tiles[self.active_tile]["ms"] / 1000)
                     elif -self.offset < self.timer <= 0 or self.offset == 0:
                         pygame.mixer_music.play()

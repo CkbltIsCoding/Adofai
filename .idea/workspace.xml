@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="disabled &quot;memory&quot; variable">
+    <list default="true" id="8663bc66-c4f4-4e69-adbc-debc1ad91499" name="更改" comment="fixed midspin">
       <change afterPath="$PROJECT_DIR$/Levels/BA/TOUHOU - Bad Apple!!.mid_Track 0.adofai" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/beat2.ogg" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/beat_to_adofai.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/simplify.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/tile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/music.py" beforeDir="false" afterPath="$PROJECT_DIR$/music.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,7 +237,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728722040190</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="fixed midspin">
+      <option name="closed" value="true" />
+      <created>1728722329742</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1728722329742</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -264,6 +275,7 @@
     <MESSAGE value="fix the last tile hiding problem" />
     <MESSAGE value="support bgImage &amp; support moveCamera event (except position) &amp; support RecolorTrack event (but buggy) &amp; improve judgement" />
     <MESSAGE value="disabled &quot;memory&quot; variable" />
-    <option name="LAST_COMMIT_MESSAGE" value="disabled &quot;memory&quot; variable" />
+    <MESSAGE value="fixed midspin" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed midspin" />
   </component>
 </project>
